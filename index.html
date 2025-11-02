@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact QR Code Generator</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 2rem;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        h1 {
+            text-align: center;
+            color: #0056b3;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            box-sizing: border-box; /* Ensures padding doesn't affect width */
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 0.85rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #qrcode {
+            margin-top: 2rem;
+            display: flex;
+            justify-content: center;
+            padding: 1rem;
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            min-height: 256px; /* Reserve space */
+        }
+        #qrcode img {
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>QR Code Generator</h1>
+        
+        <div class="form-group">
+            <label for="firstName">First Name:</label>
+            <input type="text" id="firstName" placeholder="John">
+        </div>
+        
+        <div class="form-group">
+            <label for="lastName">Last Name:</label>
+            <input type="text" id="lastName" placeholder="Doe">
+        </div>
+
+        <div class="form-group">
+            <label for="phone">Phone Number:</label>
+            <input type="tel" id="phone" placeholder="555-123-4567">
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email Address:</label>
+            <input type="email" id="email" placeholder="john.doe@example.com">
+        </div>
+
+        <div class="form-group">
+            <label for="company">Company (Optional):</label>
+            <input type="text" id="company" placeholder="Example Inc.">
+        </div>
+
+        <div class="form-group">
+            <label for="company">Website (Optional):</label>
+            <input type="text" id="url" placeholder="https://www.duckduckgo.com">
+        </div>
+
+        <button id="generateBtn">Generate QR Code</button>
+
+        <div id="qrcode"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/davidshimjs-qrcodejs@0.0.2/qrcode.min.js"></script>
+
+    <script>
+        // 3. The JavaScript to tie it all together
+        const generateBtn = document.getElementById("generateBtn");
+        const qrCodeDiv = document.getElementById("qrcode");
+        
+        // Initialize an empty QRCode object on load
+        let qrcode = new QRCode(qrCodeDiv, {
+            width: 256,
+            height: 256,
+            colorDark: "#000000",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H // High correction level
+        });
+
+        generateBtn.addEventListener("click", () => {
+            // Get values from the form
+            const firstName = document.getElementById("firstName").value;
+            const lastName = document.getElementById("lastName").value;
+            const phone = document.getElementById("phone").value;
+            const email = document.getElementById("email").value;
+            const company = document.getElementById("company").value;
+            const url = document.getElementById("url").value;
+
+            // 2. Format the data as a vCard string
+            // This is the standard format phones understand for contacts.
+            const vCard = `BEGIN:VCARD
+VERSION:3.0
+N:${lastName};${firstName}
+FN:${firstName} ${lastName}
+ORG:${company}
+TEL;TYPE=CELL:${phone}
+EMAIL:${email}
+URL: ${url}
+END:VCARD`;
+
+           
+            qrcode.clear();
+            // Generate the new QR code
+             qrcode.makeCode(vCard);
+            
+        });
+    </script>
+
+</body>
+</html>
